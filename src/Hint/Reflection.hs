@@ -12,6 +12,11 @@ import qualified Hint.GHC as GHC
 -- | An Id for a class, a type constructor, a data constructor, a binding, etc
 type Id = String
 
+getNamesInScope :: MonadInterpreter m => m [Id]
+getNamesInScope = runGhc $
+  fmap sort $ map . showPpr <$> GHC.getSessionDynFlags
+                            <*> GHC.getRdrNamesInScope
+
 data ModuleElem = Fun Id | Class Id [Id] | Data Id [Id]
   deriving (Read, Show, Eq)
 
