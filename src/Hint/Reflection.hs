@@ -1,6 +1,6 @@
 module Hint.Reflection (
       ModuleElem(..), Id, name, children,
-      getModuleExports,
+      getNamesInScope, getModuleExports,
 ) where
 
 import Data.List
