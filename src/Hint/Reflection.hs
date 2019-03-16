@@ -1,6 +1,7 @@
 module Hint.Reflection (
       ModuleElem(..), Id, name, children,
       getModuleExports,
+      getNamesInScope
 ) where
 
 import Data.List
@@ -9,8 +10,17 @@ import Data.Maybe
 import Hint.Base
 import qualified Hint.GHC as GHC
 
+import Outputable (showPpr)
+
 -- | An Id for a class, a type constructor, a data constructor, a binding, etc
 type Id = String
+
+-- | Gets all names (classes, data constructors, functions, types) currently in scope.
+--   Can be used to implemented expression completion.
+getNamesInScope :: MonadInterpreter m => m [Id]
+getNamesInScope = runGhc $
+  map . showPpr <$> GHC.getSessionDynFlags
+                <*> GHC.getRdrNamesInScope
 
 data ModuleElem = Fun Id | Class Id [Id] | Data Id [Id]
   deriving (Read, Show, Eq)
